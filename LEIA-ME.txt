@@ -1,0 +1,12 @@
+NÓS NA RUA - CARDÁPIO DIGITAL CORRIGIDO
+
+Correções:
+- Removido corte no topo
+- Logo real do "NÓS NA RUA" recortado da arte e aplicado corretamente
+- Logos RJA e IAD JAN reais no rodapé
+- Mantido efeito de ícones + pétalas caindo
+- Adicionado QR Code genérico temporário na opção PIX
+- Mantido resumo do pedido e total calculado
+
+Depois:
+- Basta trocar o arquivo qr-generico.png pelo QR oficial da igreja, mantendo o mesmo nome.

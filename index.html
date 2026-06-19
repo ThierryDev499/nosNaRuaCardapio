@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nós na Rua - Cardápio Digital</title>
+<style>
+:root{
+  --brown:#241006; --wood:#3b1c0d; --wood2:#6b3a18;
+  --gold:#f5a900; --cream:#fff3d0;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial, Helvetica, sans-serif;
+  background:linear-gradient(180deg,#fff0cd,#efbd6b 70%,#9b642f);
+  color:var(--brown);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body:before{
+  content:"";
+  position:fixed; inset:0;
+  background:repeating-linear-gradient(45deg,rgba(70,30,5,.08) 0 1px,transparent 1px 9px);
+  pointer-events:none;
+}
+.petals{position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:2}
+.petal{
+  position:absolute;
+  top:-60px;
+  font-size:28px;
+  animation:fall linear infinite;
+  opacity:.8;
+  filter:drop-shadow(0 4px 4px rgba(0,0,0,.18)); user-select:none;
+}
+@keyframes fall{
+  0%{transform:translateY(-80px) rotate(0deg)}
+  100%{transform:translateY(110vh) rotate(520deg)}
+}
+.app{
+  max-width:980px;
+  margin:0 auto;
+  padding:0 12px 135px;
+  position:relative;
+  z-index:3;
+}
+.hero{
+  border-radius:0 0 30px 30px;
+  overflow:hidden;
+  box-shadow:0 16px 35px rgba(0,0,0,.28);
+  background:#2b1408;
+  position:relative;
+}
+.hero img{width:100%; display:block}
+.hero:after{
+  content:"";
+  position:absolute; left:0; right:0; bottom:0;
+  height:140px;
+  background:linear-gradient(transparent,rgba(36,16,6,.92));
+}
+.logo-card{display:none;
+  margin:0 auto 12px;
+  position:relative;
+  z-index:4;
+  width:min(78%,430px);
+  text-align:center;
+  animation:logoIn .7s ease both;
+}
+@keyframes logoIn{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:none}}
+.logo-circle{
+  width:210px;
+  height:210px;
+  margin:0 auto;
+  border-radius:50%;
+  background:radial-gradient(circle,#5a2e14 0 48%,#241006 75%);
+  border:12px solid #8b5525;
+  box-shadow:0 14px 30px rgba(0,0,0,.35), inset 0 0 0 5px #160703;
+  display:grid;
+  place-items:center;
+  color:#fff1cd;
+  font-weight:1000;
+  font-size:52px;
+  line-height:.82;
+  text-shadow:4px 5px 0 #120804;
+  position:relative;
+}
+.logo-circle:before{
+  content:"";
+  position:absolute;
+  inset:12px;
+  border-radius:50%;
+  border:4px dashed #d19a2c;
+}
+.logo-circle small{font-size:24px; display:block; margin:9px 0}
+.title-card{
+  margin:-42px auto 10px;
+  background:linear-gradient(90deg,#df8d05,#ffc544,#df8d05);
+  color:#211007;
+  width:min(92%,620px);
+  padding:14px 18px;
+  border-radius:18px;
+  text-align:center;
+  font-weight:1000;
+  font-size:clamp(25px,6vw,44px);
+  box-shadow:0 10px 0 rgba(0,0,0,.18),0 14px 28px rgba(0,0,0,.25);
+  transform:rotate(-1deg);
+}
+.sub{text-align:center;font-weight:900;margin:8px 0 18px}
+.event-banner{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  background:linear-gradient(135deg,#fff2cd 0%,#ffd46d 100%);
+  border:2px solid #d88200;
+  border-radius:16px;
+  padding:10px 14px;
+  margin:0 auto 16px;
+  max-width:620px;
+  box-shadow:0 4px 0 rgba(0,0,0,.12), 0 6px 14px rgba(0,0,0,.15);
+  font-weight:900;
+}
+.event-date,.event-place{
+  color:#241006;
+  font-size:15px;
+  letter-spacing:.3px;
+}
+.event-date{
+  padding-right:10px;
+  border-right:2px dashed rgba(81,39,10,.35);
+}
+@media(max-width:520px){
+  .event-banner{flex-direction:column;gap:4px;padding:8px 10px}
+  .event-date{border-right:0;border-bottom:1px dashed rgba(81,39,10,.35);padding:0 0 4px 0}
+  .event-date,.event-place{font-size:14px}
+}
+.tabs{
+  display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
+  margin:16px 0 20px; position:sticky; top:8px; z-index:20;
+}
+.tab{
+  border:0; padding:12px 16px; border-radius:999px;
+  background:#fff2cd; color:#2a1207; font-weight:1000;
+  box-shadow:0 4px 0 rgba(0,0,0,.18); cursor:pointer;
+}
+.tab.active,.tab:hover{background:var(--gold);transform:translateY(-2px)}
+.board{
+  background:linear-gradient(180deg,var(--wood2),var(--wood) 48%,#1c0b04);
+  border:5px solid #1b0903; border-radius:24px; padding:14px;
+  margin-bottom:18px; box-shadow:0 16px 35px rgba(0,0,0,.28);
+  position:relative; overflow:hidden;
+}
+.board:before{
+  content:""; position:absolute; inset:0;
+  background:repeating-linear-gradient(0deg,transparent 0 24px,rgba(255,255,255,.08) 25px 26px);
+  opacity:.6;
+}
+.board h2{
+  position:relative; margin:0 0 13px; padding:12px; text-align:center;
+  border-radius:15px; background:linear-gradient(90deg,#d88304,#ffd46d,#d88304);
+  color:#241006; font-size:clamp(24px,5vw,36px); font-weight:1000;
+}
+.items{position:relative; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px}
+.item{
+  background:rgba(255,243,208,.08); border:1px solid rgba(255,218,126,.22);
+  border-radius:16px; padding:12px; color:var(--cream);
+  display:grid; grid-template-columns:auto 1fr; gap:8px; align-items:center;
+  transition:.18s; animation:show .25s ease both;
+}
+@keyframes show{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.item:hover{transform:translateY(-2px);background:rgba(255,243,208,.15)}
+.emoji{font-size:28px}.name{font-weight:900}
+.price{grid-column:1/3;color:#ffd05c;font-weight:1000;font-size:20px}
+.add{
+  grid-column:1/3; border:0; padding:11px; border-radius:13px;
+  background:var(--gold); color:#211007; font-weight:1000;
+  cursor:pointer; box-shadow:0 4px 0 rgba(0,0,0,.28);
+}
+.add:active{transform:translateY(3px);box-shadow:none}
+.cart{
+  position:fixed; left:0; right:0; bottom:0; background:#1d0b04;
+  color:#fff2cf; border-top:5px solid var(--gold); z-index:50;
+  padding:12px; box-shadow:0 -14px 30px rgba(0,0,0,.35);
+}
+.cart-in{max-width:980px;margin:0 auto;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.total{color:#ffd05c;font-weight:1000;font-size:26px}.summary{font-size:13px;max-height:38px;overflow:auto}
+.actions{display:flex;gap:8px}.btn{
+  border:0;padding:12px 14px;border-radius:14px;background:var(--gold);
+  color:#211007;font-weight:1000;cursor:pointer
+}
+.btn.secondary{background:#fff2cd}
+.drawer{display:none;position:fixed;inset:0;background:rgba(20,7,2,.78);z-index:80;padding:18px;overflow:auto}
+.drawer.show{display:block}
+.modal{
+  max-width:540px;margin:28px auto;background:#fff0ca;color:#251006;
+  border-radius:24px;border:5px solid var(--gold);padding:20px;
+  box-shadow:0 20px 50px rgba(0,0,0,.38)
+}
+.cart-row{display:grid;grid-template-columns:1fr auto;gap:8px;padding:10px 0;border-bottom:1px dashed rgba(0,0,0,.25)}
+.qty{display:flex;gap:6px;align-items:center}.qty button{width:32px;height:32px;border:0;border-radius:10px;background:var(--gold);font-weight:1000}
+#pixQr{width:260px;max-width:100%;display:block;margin:10px auto;background:white;padding:10px;border-radius:18px}
+textarea{width:100%;height:95px;border-radius:12px;padding:10px}
+.name-field{
+  display:block;
+  margin:14px 0 10px;
+  text-align:left;
+  font-weight:900;
+  color:#241006;
+}
+.name-field span{
+  display:block;
+  font-size:14px;
+  margin-bottom:6px;
+}
+.name-field small{
+  font-weight:700;
+  color:#5a2e14;
+  font-size:12px;
+}
+.name-field input{
+  width:100%;
+  padding:11px 12px;
+  border-radius:12px;
+  border:2px solid #d88200;
+  background:#fff8e6;
+  font-size:15px;
+  font-family:inherit;
+  font-weight:600;
+  color:#241006;
+  outline:none;
+  transition:.15s;
+}
+.name-field input:focus{
+  border-color:#d62976;
+  background:#fff;
+  box-shadow:0 0 0 3px rgba(214,41,118,.15);
+}
+.btn.whatsapp{
+  background:linear-gradient(135deg,#25d366 0%,#128c7e 100%);
+  color:#fff;
+  margin-top:6px;
+}
+.btn.whatsapp:hover{background:linear-gradient(135deg,#2ee073 0%,#0fa693 100%)}
+.toast{
+  position:fixed; left:50%; bottom:118px; transform:translateX(-50%) translateY(20px);
+  background:#1d0b04;color:#fff2cf;border:2px solid var(--gold);
+  padding:12px 18px;border-radius:999px;opacity:0;transition:.22s;z-index:100;font-weight:900;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.footer-logos{
+  text-align:center;
+  font-weight:1000;
+  background:rgba(255,242,205,.75);
+  padding:14px;
+  border-radius:20px;
+  margin-bottom:18px;
+}
+@media(max-width:720px){
+  .app{padding:0 10px 145px}.items{grid-template-columns:1fr}
+  .cart-in{display:block}.actions{margin-top:8px}.btn{flex:1}
+  .logo-card{display:none}.logo-circle{width:170px;height:170px;font-size:42px}.logo-circle small{font-size:20px}
+}
+
+
+  to{filter:brightness(1.35);opacity:1}
+}
+body{
+  background:
+    radial-gradient(circle at 12% 12%,rgba(255,255,255,.55),transparent 24%),
+    radial-gradient(circle at 80% 18%,rgba(245,169,0,.26),transparent 28%),
+    linear-gradient(180deg,#fff3d4,#efbd6b 68%,#8b5127)!important;
+}
+.hero{
+  margin-top:0;
+  border-radius:0 0 36px 36px!important;
+}
+.hero img{
+  filter:saturate(1.04) contrast(1.03);
+}
+.title-card{
+  margin:-34px auto 12px!important;
+  background:linear-gradient(90deg,#d78200,#ffbf22,#ffd86a,#f2a000)!important;
+  border:3px solid rgba(80,35,6,.22);
+  box-shadow:0 10px 0 rgba(0,0,0,.20),0 18px 36px rgba(0,0,0,.28), inset 0 2px 0 rgba(255,255,255,.38)!important;
+}
+.board{
+  background:
+    linear-gradient(180deg,rgba(255,213,105,.06),transparent 22%),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.04) 0 2px,transparent 2px 28px),
+    linear-gradient(180deg,#7a441e,#3f1d0d 52%,#1a0803)!important;
+  border:6px solid #190803!important;
+  box-shadow:0 18px 42px rgba(0,0,0,.34), inset 0 0 0 2px rgba(255,207,92,.12)!important;
+}
+.board h2{
+  text-shadow:0 2px 0 rgba(255,255,255,.25);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.35),0 5px 0 rgba(0,0,0,.18);
+}
+.item{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+}
+.item:hover{
+  transform:translateY(-3px) scale(1.01)!important;
+}
+.btn{
+  position:relative;
+  overflow:hidden;
+}
+.btn.primary-shine,.cart .btn:not(.secondary){
+  background:linear-gradient(90deg,#f0a000,#ffd25a,#f0a000)!important;
+  animation:pixGlow 1.4s infinite alternate;
+}
+.btn.primary-shine:after,.cart .btn:not(.secondary):after{
+  content:"";
+  position:absolute;
+  top:-40%;
+  left:-60%;
+  width:45%;
+  height:180%;
+  background:rgba(255,255,255,.45);
+  transform:rotate(25deg);
+  animation:shineMove 2.5s infinite;
+}
+@keyframes pixGlow{
+  from{box-shadow:0 0 0 rgba(255,194,51,0)}
+  to{box-shadow:0 0 22px rgba(255,194,51,.65)}
+}
+@keyframes shineMove{
+  0%{left:-70%}
+  55%{left:130%}
+  100%{left:130%}
+}
+.footer-logos{
+  background:linear-gradient(180deg,rgba(255,242,205,.95),rgba(255,222,143,.85))!important;
+  box-shadow:0 12px 28px rgba(0,0,0,.18);
+  border:2px solid rgba(81,39,10,.18);
+  padding:22px 14px 18px;
+  text-align:center;
+  border-radius:20px;
+  margin-bottom:18px;
+}
+.footer-logos b{
+  display:block;
+  margin-top:14px;
+  font-size:16px;
+  color:#241006;
+}
+.footer-partners{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:24px;
+  flex-wrap:wrap;
+  padding:6px 0;
+}
+.partner-badge{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:130px;
+  height:130px;
+  border-radius:50%;
+  padding:5px;
+  background:linear-gradient(135deg,#feda75 0%,#fa7e1e 30%,#d62976 65%,#962fbf 100%);
+  box-shadow:0 8px 18px rgba(0,0,0,.28), 0 0 0 3px #fff8e6, 0 0 0 5px rgba(214,41,118,.18);
+  transition:transform .25s ease;
+  text-decoration:none;
+  cursor:pointer;
+}
+.partner-badge:hover{transform:translateY(-4px) scale(1.04)}
+.partner-badge:focus-visible{outline:3px solid #d62976;outline-offset:4px}
+.partner-badge img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:50%;
+  background:#fff8e6;
+  border:2px solid #fff8e6;
+}
+.partner-sep{
+  width:1px;
+  height:90px;
+  background:linear-gradient(180deg,transparent,rgba(81,39,10,.45),transparent);
+}
+.footer-logos:before{
+  display:none!important;
+}
+.final-alert{
+  background:#fff2cd;
+  color:#241006;
+  border-radius:16px;
+  padding:12px;
+  margin-top:12px;
+  font-weight:900;
+  border:2px dashed #d78200;
+}
+
+
+/* Correções finais */
+.app{
+  padding-top:0!important;
+}
+.hero{
+  margin-top:0!important;
+  border-radius:0 0 32px 32px!important;
+  background:transparent!important;
+  padding:18px 16px 14px;
+  text-align:center;
+  box-shadow:none;
+}
+.hero .logo-medal{
+  width:min(220px,55%);
+  height:auto;
+  display:inline-block;
+  filter:drop-shadow(0 8px 16px rgba(81,39,10,.35));
+  animation:logoGlow 3s ease-in-out infinite alternate;
+}
+@keyframes logoGlow{
+  from{filter:drop-shadow(0 8px 16px rgba(81,39,10,.35)) drop-shadow(0 0 6px rgba(255,194,51,.25))}
+  to{filter:drop-shadow(0 8px 16px rgba(81,39,10,.35)) drop-shadow(0 0 18px rgba(255,194,51,.55))}
+}
+.hero:after{
+  display:none!important;
+}
+.brand-logo{
+  width:min(82%,430px);
+  margin:-92px auto 16px;
+  position:relative;
+  z-index:6;
+  text-align:center;
+  pointer-events:none;
+}
+.brand-logo img{
+  width:100%;
+  filter:drop-shadow(0 12px 18px rgba(0,0,0,.38));
+}
+.title-card{
+  margin:12px auto 12px!important;
+  position:relative!important;
+  z-index:5!important;
+}
+.sub{
+  position:relative;
+  z-index:5;
+}
+.top-lights{
+  position:absolute;
+  left:0;
+  right:0;
+  top:0;
+  height:80px;
+  z-index:7;
+  pointer-events:none;
+}
+.footer-logos:before{
+  content:""!important;
+}
+.footer-logos img{
+  max-width:520px;
+  width:90%;
+  display:block;
+  margin:0 auto 8px;
+  filter:drop-shadow(0 4px 6px rgba(0,0,0,.16));
+}
+.pix-box{
+  background:white;
+  border-radius:18px;
+  padding:10px;
+  display:block;
+  width:260px;
+  max-width:100%;
+  margin:12px auto;
+  box-shadow:0 8px 22px rgba(0,0,0,.22);
+}
+.pix-warning{
+  background:#fff2cd;
+  border:2px dashed #d78200;
+  border-radius:14px;
+  padding:10px;
+  margin:10px 0;
+  font-weight:900;
+}
+@media(max-width:720px){
+  .brand-logo{
+    width:82%;
+    margin:-72px auto 12px;
+  }
+  .hero{
+    padding:20px 10px 18px;
+  }
+  .hero .logo-medal{
+    width:min(300px,88%);
+  }
+  .partner-badge svg{
+    width:115px;
+  }
+  .partner-sep{
+    height:70px;
+  }
+  .footer-partners{
+    gap:14px;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div></div>
+<div class="petals" id="petals"></div>
+
+<main class="app">
+
+<div class="title-card">FAÇA SEU PEDIDO</div>
+  <div class="sub">Escolha seus itens e pague no PIX</div>
+
+  <div class="event-banner">
+    <div class="event-date">📅 20/06 — SÁBADO — 19H</div>
+    <div class="event-place">📍 RUA DONA CLARA, 9 - BOAÇU - SG</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="filter('todos',this)">Tudo</button>
+    <button class="tab" onclick="filter('salgados',this)">🍔 Salgados</button>
+    <button class="tab" onclick="filter('doces',this)">🍰 Doces</button>
+    <button class="tab" onclick="filter('bebidas',this)">🥤 Bebidas</button>
+  </div>
+
+  <div id="menu"></div>
+
+  
+  <div class="footer-logos">
+    <div class="footer-partners">
+      <a class="partner-badge" href="https://www.instagram.com/rja_iadjan/" target="_blank" rel="noopener" aria-label="Instagram RJA">
+        <img src="rja_n.jpg" alt="RJA - Rede de Jovens e Adolescentes">
+      </a>
+      <div class="partner-sep"></div>
+      <a class="partner-badge" href="https://www.instagram.com/iadjanoficial/" target="_blank" rel="noopener" aria-label="Instagram IAD JAN">
+        <img src="artlogoiadjan.jpg" alt="IAD JAN - Jardim Nogueira">
+      </a>
+    </div>
+    <b>20/06 • 19H — Rua Dona Clara, 9 - Boaçu - SG</b>
+  </div>
+
+</main>
+
+<div class="cart">
+  <div class="cart-in">
+    <div>
+      <div class="total">Total: R$ <span id="total">0,00</span></div>
+      <div class="summary" id="summary">Nenhum item selecionado.</div>
+    </div>
+    <div class="actions">
+      <button class="btn secondary" onclick="openCart()">Ver pedido</button>
+      <button class="btn primary-shine" onclick="openPix()">Pagar PIX</button>
+    </div>
+  </div>
+</div>
+
+<div class="drawer" id="cartModal">
+  <div class="modal">
+    <h2>🛒 Seu pedido</h2>
+    <div id="cartRows"></div>
+    <h2>Total: R$ <span id="modalTotal">0,00</span></h2>
+    <label class="name-field">
+      <span>Seu nome <small>(opcional — pra facilitar a entrega)</small></span>
+      <input id="customerName" type="text" maxlength="40" placeholder="Ex: Maria Silva" autocomplete="name">
+    </label>
+    <button class="btn primary-shine" onclick="openPix()">Pagar PIX</button>
+    <button class="btn secondary" onclick="clearCart()">Limpar pedido</button>
+    <button class="btn secondary" onclick="closeCart()">Fechar</button>
+  </div>
+</div>
+
+<div class="drawer" id="pixModal">
+  <div class="modal">
+    <h2>Pagamento via PIX</h2>
+    <p>Confira o total, escaneie o QR Code e mostre o comprovante na barraca.</p>
+    <h2>Total: R$ <span id="pixTotal">0,00</span></h2>
+<img class="pix-box" id="pixQr" src="qr-generico.png" alt="QR Code PIX temporário">
+    <div class="pix-warning">QR Code temporário — depois vamos trocar pelo QR oficial da igreja.</div>
+    <textarea id="pixCode" readonly placeholder="Resumo do pedido"></textarea>
+    <button class="btn" onclick="copyPix()">Copiar resumo</button>
+    <button class="btn whatsapp" onclick="sendWhatsApp()">✅ Já paguei — Enviar pelo WhatsApp</button>
+    <button class="btn secondary" onclick="closePix()">Fechar</button>
+    <p style="font-size:13px">QR Code temporário. Depois vamos trocar pelo QR oficial da igreja.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const PIX_KEY="27782408000119", MERCHANT_NAME="IAD JAN", MERCHANT_CITY="SAO GONCALO";
+const CHURCH_WHATSAPP="5521999999999";
+const groups=[
+ {cat:"salgados",title:"🍔 SALGADOS",items:[
+  ["🍔","Hambúrguer + Batata Frita",15],["🍔","Hambúrguer",10],["🍟","Batata Frita",5],["🌽","Milho",8],
+  ["🥣","Caldo de Abóbora",8],["🥣","Caldo de Aipim",8],["🥣","Caldo Verde",8],["🍢","Espeto Misto",10],
+  ["🍢","Espeto de Carne",10],["🍢","Espeto de Frango",10],["🥧","Empadão",8],["🥟","Salgados",8],
+  ["🍕","Pizza",8],["🥟","Pastel",10]
+ ]},
+ {cat:"doces",title:"🍰 DOCES",items:[
+  ["🍮","Pudim",8],["🍋","Torta de Limão",8],["🍫","Brownie",8],["🍌","Banoffe",8],["🎂","Fatia de Bolo",8],
+  ["🍓","Fondue",8],["🧁","Bolo de Pote",8],["🥤","Copo da Felicidade",8],["🍬","Docinho",5]
+ ]},
+ {cat:"bebidas",title:"🥤 BEBIDAS",items:[["🥤","Refrigerante",1],["🧃","Guaravita",2]]}
+];
+let current="todos", cart=[];
+function money(v){return v.toFixed(2).replace(".",",")}
+function renderMenu(){
+  document.getElementById("menu").innerHTML=groups.filter(g=>current==="todos"||g.cat===current).map(g=>`
+    <section class="board"><h2>${g.title}</h2><div class="items">
+      ${g.items.map((it,i)=>`<div class="item"><div class="emoji">${it[0]}</div><div class="name">${it[1]}</div><div class="price">R$ ${money(it[2])}</div><button class="add" onclick="add('${g.cat}',${i})">Adicionar</button></div>`).join("")}
+    </div></section>`).join("");
+}
+function filter(cat,btn){current=cat;document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));btn.classList.add("active");renderMenu()}
+function add(cat,index){
+  const group=groups.find(g=>g.cat===cat), item=group.items[index];
+  let found=cart.find(x=>x.name===item[1]);
+  if(found) found.qtd++; else cart.push({emoji:item[0],name:item[1],price:item[2],qtd:1});
+  renderCart(); toast(item[1]+" adicionado ✅");
+}
+function total(){return cart.reduce((s,x)=>s+x.price*x.qtd,0)}
+function renderCart(){
+  document.getElementById("total").textContent=money(total());
+  document.getElementById("modalTotal").textContent=money(total());
+  document.getElementById("pixTotal").textContent=money(total());
+  document.getElementById("summary").textContent=cart.length?cart.map(x=>`${x.qtd}x ${x.name}`).join(" • "):"Nenhum item selecionado.";
+  document.getElementById("cartRows").innerHTML=cart.length?cart.map((x,i)=>`
+    <div class="cart-row"><div><b>${x.emoji} ${x.name}</b><br>R$ ${money(x.price)} cada</div><div class="qty"><button onclick="dec(${i})">-</button><b>${x.qtd}</b><button onclick="inc(${i})">+</button></div></div>
+  `).join(""):"<p>Nenhum item selecionado.</p>";
+}
+function inc(i){cart[i].qtd++;renderCart()}
+function dec(i){cart[i].qtd--;if(cart[i].qtd<=0)cart.splice(i,1);renderCart()}
+function clearCart(){cart=[];renderCart();toast("Pedido limpo")}
+function openCart(){document.getElementById("cartModal").classList.add("show")}
+function closeCart(){document.getElementById("cartModal").classList.remove("show")}
+function openPix(){
+  if(total()<=0){toast("Selecione algum item primeiro");return}
+  const nome=(document.getElementById("customerName")?.value||"").trim();
+  let resumo="Pedido - Nós na Rua";
+  if(nome) resumo="\u{1F464} Nome: "+nome+"\n"+resumo;
+  resumo+="\n\n" + cart.map(x => `${x.qtd}x ${x.name} - R$ ${money(x.price*x.qtd)}`).join("\n") + "\n\nTotal: R$ " + money(total());
+  document.getElementById("pixCode").value = resumo;
+  document.getElementById("pixModal").classList.add("show");
+}
+function closePix(){document.getElementById("pixModal").classList.remove("show")}
+function copyPix(){navigator.clipboard.writeText(document.getElementById("pixCode").value);toast("Resumo copiado ✅")}
+function sendWhatsApp(){
+  if(total()<=0){toast("Selecione algum item primeiro");return}
+  const nome=(document.getElementById("customerName")?.value||"").trim();
+  let msg="Olá! Acabei de fazer um pedido no Nós na Rua e já paguei o PIX ✅";
+  if(nome) msg="\u{1F464} Nome: "+nome+"\n\n"+msg;
+  msg+="\n\n\u{1F4CD} 20/06 — 19H — Rua Dona Clara, 9 - Boaçu - SG\n\n*Itens:*\n";
+  msg+=cart.map(x=>`• ${x.qtd}x ${x.name} — R$ ${money(x.price*x.qtd)}`).join("\n");
+  msg+=`\n\n*Total: R$ ${money(total())}*`;
+  msg+="\n\nObrigado! \u{1F64F}";
+  const url=`https://wa.me/${CHURCH_WHATSAPP}?text=${encodeURIComponent(msg)}`;
+  window.open(url,"_blank","noopener");
+  toast("Abrindo WhatsApp ✅");
+}
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1400)}
+function tlv(id,value){return id+String(value.length).padStart(2,"0")+value}
+function generatePixPayload(amount){
+  const p=tlv("00","01")+tlv("26",tlv("00","br.gov.bcb.pix")+tlv("01",PIX_KEY))+tlv("52","0000")+tlv("53","986")+tlv("54",amount.toFixed(2))+tlv("58","BR")+tlv("59",MERCHANT_NAME.substring(0,25))+tlv("60",MERCHANT_CITY.substring(0,15))+tlv("62",tlv("05","***"))+"6304";
+  return p+crc16(p);
+}
+function crc16(str){let crc=0xFFFF;for(let c=0;c<str.length;c++){crc^=str.charCodeAt(c)<<8;for(let i=0;i<8;i++){crc=(crc&0x8000)?(crc<<1)^0x1021:crc<<1;crc&=0xFFFF}}return crc.toString(16).toUpperCase().padStart(4,"0")}
+function createPetals(){
+  const area=document.getElementById("petals");
+
+  // Ícones misturados: comidas, bebidas, pétalas e elementos do evento
+  const icons = ["🍔","🍟","🌽","🥣","🍢","🥧","🥟","🍕","🍮","🍋","🍫","🍌","🎂","🍓","🧁","🍬","🥤","🧃","🍁","🍂","⭐","🎵","🎁","❤️"];
+
+  for(let i=0;i<34;i++){
+    const p=document.createElement("div");
+    p.className="petal";
+    p.textContent=icons[Math.floor(Math.random()*icons.length)];
+    p.style.left=Math.random()*100+"vw";
+    p.style.animationDuration=(7+Math.random()*12)+"s";
+    p.style.animationDelay=(-Math.random()*12)+"s";
+    p.style.fontSize=(18+Math.random()*20)+"px";
+    p.style.opacity=(0.45+Math.random()*0.45).toFixed(2);
+    area.appendChild(p);
+  }
+}
+renderMenu();renderCart();createPetals();
+</script>
+</body>
+</html>
