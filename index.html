@@ -106,6 +106,42 @@ body:before{
   transform:rotate(-1deg);
 }
 .sub{text-align:center;font-weight:900;margin:8px 0 18px}
+.countdown{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  background:linear-gradient(135deg,#d62976 0%,#fa7e1e 100%);
+  color:#fff8e6;
+  padding:8px 14px;
+  border-radius:999px;
+  font-weight:900;
+  font-size:14px;
+  margin:0 auto 14px;
+  width:fit-content;
+  max-width:90%;
+  box-shadow:0 4px 12px rgba(214,41,118,.4);
+  animation:cdPulse 2s ease-in-out infinite;
+}
+.cd-time{
+  background:rgba(255,255,255,.22);
+  padding:2px 10px;
+  border-radius:8px;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:1px;
+}
+@keyframes cdPulse{
+  0%,100%{box-shadow:0 4px 12px rgba(214,41,118,.4)}
+  50%{box-shadow:0 4px 20px rgba(214,41,118,.75)}
+}
+.countdown.event-live{
+  background:linear-gradient(135deg,#25d366 0%,#128c7e 100%);
+  animation:cdPulseLive 1.2s ease-in-out infinite;
+}
+@keyframes cdPulseLive{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.04)}
+}
 .event-banner{
   display:flex;
   align-items:center;
@@ -196,6 +232,43 @@ body:before{
 }
 .btn.secondary{background:#fff2cd;border:2px solid #d88200}
 .btn.secondary:hover{background:#ffe49e}
+.cart-btn{position:relative}
+.cart-icon{display:inline-block;margin-right:4px}
+.cart-badge{
+  display:inline-block;
+  min-width:22px;
+  height:22px;
+  line-height:22px;
+  padding:0 7px;
+  margin-left:6px;
+  background:#d62976;
+  color:#fff;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:1000;
+  box-shadow:0 0 0 2px #fff,0 0 0 3px #d62976;
+  vertical-align:middle;
+  text-align:center;
+}
+.cart-badge:empty,.cart-badge.zero{display:none}
+.item-badge{
+  display:inline-block;
+  background:linear-gradient(135deg,#d62976,#fa7e1e);
+  color:#fff;
+  font-size:10px;
+  font-weight:1000;
+  padding:2px 7px;
+  border-radius:6px;
+  margin-left:6px;
+  letter-spacing:.5px;
+  box-shadow:0 2px 5px rgba(214,41,118,.45);
+  vertical-align:middle;
+  animation:badgeShine 2.5s ease-in-out infinite;
+}
+@keyframes badgeShine{
+  0%,100%{box-shadow:0 2px 5px rgba(214,41,118,.45)}
+  50%{box-shadow:0 2px 12px rgba(250,126,30,.75)}
+}
 .drawer{display:none;position:fixed;inset:0;background:rgba(20,7,2,.78);z-index:80;padding:18px;overflow:auto}
 .drawer.show{display:block}
 .modal{
@@ -518,6 +591,12 @@ body{
 
 <main class="app">
 
+<div id="countdown" class="countdown">
+  <span class="cd-label">⏰ Faltam</span>
+  <span class="cd-time" id="cdTime">--</span>
+  <span class="cd-label">para o evento</span>
+</div>
+
 <div class="title-card">CARDÁPIO DIGITAL</div>
   <div class="sub">Antecipe seu pedido e pague via PIX</div>
 
@@ -559,7 +638,7 @@ body{
       <div class="summary" id="summary">Nenhum item selecionado.</div>
     </div>
     <div class="actions">
-      <button class="btn secondary" onclick="openCart()">Ver pedido</button>
+      <button class="btn secondary cart-btn" onclick="openCart()"><span class="cart-icon">🛒</span> Ver pedido <span class="cart-badge" id="cartBadge">0</span></button>
       <button class="btn primary-shine" onclick="openPix()">Pagar PIX</button>
     </div>
   </div>
@@ -620,10 +699,11 @@ const groups=[
 ];
 let current="todos", cart=[];
 function money(v){return v.toFixed(2).replace(".",",")}
+const HIGHLIGHTS=["Hambúrguer + Batata Frita","Fatia de Bolo","Pula-Pula"];
 function renderMenu(){
   document.getElementById("menu").innerHTML=groups.filter(g=>current==="todos"||g.cat===current).map(g=>`
     <section class="board"><h2>${g.title}</h2><div class="items">
-      ${g.items.map((it,i)=>`<div class="item"><div class="emoji">${it[0]}</div><div class="name">${it[1]}</div><div class="price">R$ ${money(it[2])}</div><button class="add" onclick="add('${g.cat}',${i})">Adicionar</button></div>`).join("")}
+      ${g.items.map((it,i)=>`<div class="item"><div class="emoji">${it[0]}</div><div class="name">${it[1]}${HIGHLIGHTS.includes(it[1])?' <span class="item-badge">🔥 DESTAQUE</span>':''}</div><div class="price">R$ ${money(it[2])}</div><button class="add" onclick="add('${g.cat}',${i})">Adicionar</button></div>`).join("")}
     </div></section>`).join("");
 }
 function filter(cat,btn){current=cat;document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));btn.classList.add("active");renderMenu()}
@@ -642,6 +722,9 @@ function renderCart(){
   document.getElementById("cartRows").innerHTML=cart.length?cart.map((x,i)=>`
     <div class="cart-row"><div><b>${x.emoji} ${x.name}</b><br>R$ ${money(x.price)} cada</div><div class="qty"><button onclick="dec(${i})">-</button><b>${x.qtd}</b><button onclick="inc(${i})">+</button></div></div>
   `).join(""):"<p>Nenhum item selecionado.</p>";
+  const qty=cart.reduce((s,x)=>s+x.qtd,0);
+  const badge=document.getElementById("cartBadge");
+  if(badge){badge.textContent=qty;badge.classList.toggle("zero",qty===0)}
 }
 function inc(i){cart[i].qtd++;renderCart()}
 function dec(i){cart[i].qtd--;if(cart[i].qtd<=0)cart.splice(i,1);renderCart()}
@@ -708,6 +791,35 @@ function createPetals(){
   }
 }
 renderMenu();renderCart();createPetals();
+function startCountdown(){
+  const el=document.getElementById("cdTime");
+  const box=document.getElementById("countdown");
+  if(!el) return;
+  // evento: 20/06 às 19h horário de Brasília
+  const target=new Date("2026-06-20T19:00:00-03:00");
+  function tick(){
+    const diff=target-new Date();
+    if(diff<=0){
+      el.textContent="🎉 EVENTO AO VIVO!";
+      box.classList.add("event-live");
+      return;
+    }
+    const d=Math.floor(diff/86400000);
+    const h=Math.floor((diff%86400000)/3600000);
+    const m=Math.floor((diff%3600000)/60000);
+    const s=Math.floor((diff%60000)/1000);
+    let parts=[];
+    if(d>0) parts.push(d+"d");
+    if(d>0||h>0) parts.push(String(h).padStart(2,"0")+"h");
+    parts.push(String(m).padStart(2,"0")+"m");
+    parts.push(String(s).padStart(2,"0")+"s");
+    el.textContent=parts.join(" ");
+    document.querySelector(".cd-label:nth-of-type(2)").textContent=d>0?"para o evento":"começa em";
+  }
+  tick();
+  setInterval(tick,1000);
+}
+startCountdown();
 </script>
 </body>
 </html>
