@@ -840,6 +840,9 @@ function startCountdown(){
   }
   tick();
   setInterval(tick,1000);
+  // quando a aba volta a ficar visível (celular saindo do background), recalcula
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden)tick()});
+  window.addEventListener("pageshow",tick);
 }
 startCountdown();
 </script>
