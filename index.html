@@ -768,14 +768,7 @@ function getOrderInfo(){
 }
 function openPix(){
   if(total()<=0){toast("Selecione algum item primeiro");return}
-  const nomeCart=(document.getElementById("customerName")?.value||"").trim();
-  if(nomeCart && !document.getElementById("customerNamePix").value){
-    document.getElementById("customerNamePix").value=nomeCart;
-  }
-  const {nome,data,hora}=getOrderInfo();
-  let resumo=`📋 Pedido - Nós na Rua\n👤 Nome: ${nome}\n🕒 ${data} às ${hora}\n\n`;
-  resumo+=cart.map(x => `${x.qtd}x ${x.name} - R$ ${money(x.price*x.qtd)}`).join("\n") + "\n\nTotal: R$ " + money(total());
-  document.getElementById("pixCode").value = resumo;
+  document.getElementById("pixTotal").textContent=money(total());
   document.getElementById("pixModal").classList.add("show");
 }
 function closePix(){document.getElementById("pixModal").classList.remove("show")}
