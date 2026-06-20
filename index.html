@@ -185,11 +185,17 @@ body:before{
 }
 .cart-in{max-width:980px;margin:0 auto;display:flex;justify-content:space-between;gap:12px;align-items:center}
 .total{color:#ffd05c;font-weight:1000;font-size:26px}.summary{font-size:13px;max-height:38px;overflow:auto}
-.actions{display:flex;gap:8px}.btn{
+.btn{
+  display:inline-block;
+  width:100%;
   border:0;padding:12px 14px;border-radius:14px;background:var(--gold);
-  color:#211007;font-weight:1000;cursor:pointer
+  color:#211007;font-weight:1000;cursor:pointer;margin-top:8px;
+  font-size:15px;
+  font-family:inherit;
+  text-align:center;
 }
-.btn.secondary{background:#fff2cd}
+.btn.secondary{background:#fff2cd;border:2px solid #d88200}
+.btn.secondary:hover{background:#ffe49e}
 .drawer{display:none;position:fixed;inset:0;background:rgba(20,7,2,.78);z-index:80;padding:18px;overflow:auto}
 .drawer.show{display:block}
 .modal{
