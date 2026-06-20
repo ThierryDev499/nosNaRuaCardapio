@@ -525,6 +525,7 @@ body{
     <button class="tab" onclick="filter('salgados',this)">🍔 Salgados</button>
     <button class="tab" onclick="filter('doces',this)">🍰 Doces</button>
     <button class="tab" onclick="filter('bebidas',this)">🥤 Bebidas</button>
+    <button class="tab" onclick="filter('bilhetes',this)">🎟️ Bilhetes</button>
   </div>
 
   <div id="menu"></div>
@@ -608,7 +609,8 @@ const groups=[
   ["🍮","Pudim",8],["🍋","Torta de Limão",8],["🍰","Torta Alemã",8],["🍫","Brownie",8],["🍌","Banoffe",8],
   ["🎂","Fatia de Bolo",12],["🍓","Fondue",8],["🧁","Bolo de Pote",8],["🥤","Copo da Felicidade",8]
  ]},
- {cat:"bebidas",title:"🥤 BEBIDAS",items:[["🥤","Refrigerante",1],["🧃","Guaravita",2],["☕","Chocolate Quente",6],["☕","Café Mineiro",6]]}
+ {cat:"bebidas",title:"🥤 BEBIDAS",items:[["🥤","Refrigerante",1],["🧃","Guaravita",2],["☕","Chocolate Quente",6],["☕","Café Mineiro",6]]},
+ {cat:"bilhetes",title:"🎟️ BILHETES",items:[["🎪","Pula-Pula",2],["🎟️","Sorteio — 1 número",5],["🎟️","Sorteio — 3 números",10]]}
 ];
 let current="todos", cart=[];
 function money(v){return v.toFixed(2).replace(".",",")}
